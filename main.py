@@ -1,68 +1,28 @@
-import os
-import requests
-import yt_dlp
-from telegram import Update
-from telegram.ext import Updater, MessageHandler, Filters, CallbackContext
+Notepad++ v8.8.8 new features, regression fixes & bug-fixes:
 
-TOKEN = os.environ.get("TOKEN")  # هيتظبط في Koyeb
+ 1. Add Notepad++ MSI (x64) for enterprise IT deployment.
+ 2. Security enhancement: Prevent Notepad++ updater from being hijacked.
+ 3. Fix multi-selection crash (regression) when smart highlighting is enabled.
+ 4. Add tab label length limitation option to have reasonable tab width.
+ 5. Improve the performance of saving session on exit.
+ 6. Fix Distraction free mode disabling tab bar hiding regression.
+ 7. Add text scale support.
+ 8. Fix switching among some encoding not working issue.
+ 9. Fix Notepad++ not handle system default code page UTF-8 well.
+10. Improve Rust handling: keywords and autoCompletion.
 
-def download_youtube(url):
-    ydl_opts = {
-        'outtmpl': '/tmp/video.%(ext)s',
-        'format': 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/mp4',
-        'noplaylist': True,
-        'quiet': True,
-    }
-    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-        info = ydl.extract_info(url, download=True)
-        filename = ydl.prepare_filename(info)
-    return filename
 
-def get_instagram_download(url):
-    api = f"https://saveinsta.app/api/lookup/?url={url}"
-    resp = requests.get(api, timeout=20)
-    data = resp.json()
-    return data["media"][0].get("downloadUrl")
+Get more info on
+https://notepad-plus-plus.org/downloads/v8.8.8/
 
-def handle_message(update: Update, context: CallbackContext):
-    text = update.message.text.strip()
-    chat_id = update.message.chat_id
-    try:
-        if "youtube.com" in text or "youtu.be" in text:
-            update.message.reply_text("جاري تحميل الفيديو من YouTube... انتظر شوية")
-            file_path = download_youtube(text)
-            with open(file_path, "rb") as f:
-                update.message.reply_video(video=f)
-            try:
-                os.remove(file_path)
-            except:
-                pass
 
-        elif "instagram.com" in text:
-            update.message.reply_text("جاري استخراج رابط التحميل من Instagram...")
-            dl = get_instagram_download(text)
-            if dl:
-                update.message.reply_video(dl)
-            else:
-                update.message.reply_text("معلش، مينفعش أجيب الفيديو دلوقتي.")
+Included plugins:
 
-        else:
-            update.message.reply_text("ابعت لينك من YouTube أو Instagram بس.")
+ 1.  NppExport v0.4
+ 2.  Converter v4.7
+ 3.  Mime Tool v3.1
 
-    except Exception as e:
-        update.message.reply_text("حصل خطأ في التحميل. جرب تاني أو ابعت لينك تاني.")
-        print("ERROR:", e)
 
-def main():
-    if not TOKEN:
-        print("ERROR: TOKEN not set in environment variables.")
-        return
+Updater (Installer only):
 
-    updater = Updater(TOKEN, use_context=True)
-    dp = updater.dispatcher
-    dp.add_handler(MessageHandler(Filters.text & ~Filters.command, handle_message))
-    updater.start_polling()
-    updater.idle()
-
-if name == "__main__":
-    main()
+* WinGUp (for Notepad++) v5.3.7
